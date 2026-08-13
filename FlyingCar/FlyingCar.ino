@@ -164,6 +164,23 @@ void loop() {
             // ESCs disarmed strictly in Drive Mode
             flight.disarm();
 
+            // Allow RC Transmitter sticks to drive tires directly if active
+            if (!rc.isFailsafeActive()) {
+                int16_t rcForward = 0;
+                int16_t rcSteer = 0;
+                uint16_t pit = rc.getPitch();
+                uint16_t rol = rc.getRoll();
+                if (abs((int16_t)pit - RC_MID_PULSE) > RC_DEADZONE) {
+                    rcForward = map((long)pit, RC_MIN_PULSE, RC_MAX_PULSE, -255, 255);
+                }
+                if (abs((int16_t)rol - RC_MID_PULSE) > RC_DEADZONE) {
+                    rcSteer = map((long)rol, RC_MIN_PULSE, RC_MAX_PULSE, -255, 255);
+                }
+                if (rcForward != 0 || rcSteer != 0) {
+                    drive.setCommand(rcForward, rcSteer);
+                }
+            }
+
             // Run Ground Drive Ramping Loop
             drive.update();
         }
