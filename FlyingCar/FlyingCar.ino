@@ -65,10 +65,13 @@ void printDebugInfo();
 void setup() {
 #if DEBUG
     Serial.begin(DEBUG_BAUD);
-    Serial.println(F("\n=================================================="));
+    delay(500); // Allow USB Serial port on Mega 2560 to stabilize after reset
+    Serial.println();
+    Serial.println(F("=================================================="));
     Serial.println(F(" INITIALIZING HYBRID FLYING RC CAR FIRMWARE"));
     Serial.println(F(" Board: Arduino Mega 2560 | Target loop: 250Hz"));
     Serial.println(F("=================================================="));
+    Serial.flush();
 #endif
 
     // Initialize Mode Switch Pin (Internal Pull-Up enabled)

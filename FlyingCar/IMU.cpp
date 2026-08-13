@@ -11,6 +11,10 @@ bool IMU::begin() {
     Wire.begin();
     Wire.setClock(400000); // 400kHz Fast Mode I2C
 
+#if defined(WIRE_HAS_TIMEOUT) || defined(ARDUINO_ARCH_AVR)
+    Wire.setWireTimeout(3000, true); // 3ms timeout to prevent I2C hangs if IMU disconnected
+#endif
+
     // Wake up MPU6050 (exit sleep mode)
     writeRegister(0x6B, 0x00);
     delay(50);
