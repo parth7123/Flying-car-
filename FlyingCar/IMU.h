@@ -22,7 +22,7 @@ public:
     bool isInitialized() const { return initialized; }
 
 private:
-    static const uint8_t MPU_ADDR = 0x68;
+    uint8_t mpuAddr;
 
     bool initialized;
 

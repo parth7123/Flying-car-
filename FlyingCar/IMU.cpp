@@ -1,7 +1,7 @@
 #include "IMU.h"
 
 IMU::IMU() 
-    : initialized(false), roll(0.0f), pitch(0.0f),
+    : mpuAddr(0x68), initialized(false), roll(0.0f), pitch(0.0f),
       gyroX(0.0f), gyroY(0.0f), gyroZ(0.0f),
       accelX(0.0f), accelY(0.0f), accelZ(0.0f),
       gyroXOffset(0.0f), gyroYOffset(0.0f), gyroZOffset(0.0f),
@@ -15,19 +15,36 @@ bool IMU::begin() {
     Wire.setWireTimeout(3000, true); // 3ms timeout to prevent I2C hangs if IMU disconnected
 #endif
 
-    // Wake up MPU6050 (exit sleep mode)
-    writeRegister(0x6B, 0x00);
-    delay(50);
+    uint8_t addrs[2] = {0x68, 0x69};
+    uint8_t foundAddr = 0;
 
-    // Verify WHO_AM_I register (0x75, should return 0x68)
-    Wire.beginTransmission(MPU_ADDR);
-    Wire.write(0x75);
-    Wire.endTransmission(false);
-    Wire.requestFrom(MPU_ADDR, (uint8_t)1);
-    if (!Wire.available() || Wire.read() != 0x68) {
+    for (uint8_t i = 0; i < 2; i++) {
+        uint8_t addr = addrs[i];
+        Wire.beginTransmission(addr);
+        Wire.write(0x6B);
+        Wire.write(0x00); // Wake up
+        if (Wire.endTransmission(true) == 0) {
+            delay(20);
+            Wire.beginTransmission(addr);
+            Wire.write(0x75); // WHO_AM_I
+            Wire.endTransmission(false);
+            Wire.requestFrom(addr, (uint8_t)1);
+            if (Wire.available()) {
+                uint8_t id = Wire.read();
+                if (id == 0x68 || id == 0x69 || id == addr) {
+                    foundAddr = addr;
+                    break;
+                }
+            }
+        }
+    }
+
+    if (foundAddr == 0) {
         initialized = false;
         return false;
     }
+
+    mpuAddr = foundAddr;
 
     // Configure Gyro Full Scale Range (±500 deg/s -> GYRO_CONFIG = 0x08)
     writeRegister(0x1B, 0x08);
@@ -47,17 +64,17 @@ bool IMU::begin() {
 }
 
 void IMU::writeRegister(uint8_t reg, uint8_t data) {
-    Wire.beginTransmission(MPU_ADDR);
+    Wire.beginTransmission(mpuAddr);
     Wire.write(reg);
     Wire.write(data);
     Wire.endTransmission(true);
 }
 
 void IMU::readRawData(int16_t &ax, int16_t &ay, int16_t &az, int16_t &gx, int16_t &gy, int16_t &gz) {
-    Wire.beginTransmission(MPU_ADDR);
+    Wire.beginTransmission(mpuAddr);
     Wire.write(0x3B); // Starting register for Accel X High Byte
     Wire.endTransmission(false);
-    Wire.requestFrom(MPU_ADDR, (uint8_t)14); // 14 bytes: 6 accel, 2 temp, 6 gyro
+    Wire.requestFrom(mpuAddr, (uint8_t)14); // 14 bytes: 6 accel, 2 temp, 6 gyro
 
     if (Wire.available() >= 14) {
         ax = (Wire.read() << 8) | Wire.read();
