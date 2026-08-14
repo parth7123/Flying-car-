@@ -141,6 +141,16 @@ void Telemetry::update(Drive &drive) {
     // 2. Parse HC-05 Bluetooth command stream
     while (SERIAL_BT.available()) {
         char c = SERIAL_BT.read();
+
+        // Instant single-character parsing (F, B, L, R, S) without requiring newline
+        if (c == 'F' || c == 'f' || c == 'B' || c == 'b' || 
+            c == 'L' || c == 'l' || c == 'R' || c == 'r' || c == 'S' || c == 's') {
+            char singleCmd[2] = { (char)toupper(c), '\0' };
+            processBluetoothCommand(singleCmd, drive);
+            btBufferIdx = 0;
+            continue;
+        }
+
         if (c == '\n' || c == '\r') {
             if (btBufferIdx > 0) {
                 btBuffer[btBufferIdx] = '\0';
