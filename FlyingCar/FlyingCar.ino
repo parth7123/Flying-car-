@@ -17,8 +17,8 @@
   ESC 2 (Front-Right Motor)         Pin 3 (Servo PWM 1000-2000us)
   ESC 3 (Rear-Left Motor)           Pin 4 (Servo PWM 1000-2000us)
   ESC 4 (Rear-Right Motor)          Pin 5 (Servo PWM 1000-2000us)
-  DC Motor Driver IN1 / IN2 (Left)  Pin 22, Pin 23
-  DC Motor Driver IN3 / IN4 (Right) Pin 24, Pin 25
+  DC Motor Driver IN1 / IN2 (Left)  Pin 30, Pin 31
+  DC Motor Driver IN3 / IN4 (Right) Pin 32, Pin 33
   DC Motor Driver ENA (Left PWM)    Pin 6
   DC Motor Driver ENB (Right PWM)   Pin 7
   Mode Switch                       Pin 8 (LOW = Drive Mode, HIGH = Fly Mode)

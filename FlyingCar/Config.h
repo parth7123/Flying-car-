@@ -26,10 +26,10 @@
 #define PIN_ESC_RR            5    // Rear-Right Motor (ESC 4)
 
 // Ground Drive Motors (L298N H-Bridge Driver)
-#define PIN_DRIVE_IN1         22   // Left Motor Direction 1
-#define PIN_DRIVE_IN2         23   // Left Motor Direction 2
-#define PIN_DRIVE_IN3         24   // Right Motor Direction 1
-#define PIN_DRIVE_IN4         25   // Right Motor Direction 2
+#define PIN_DRIVE_IN1         30   // Left Motor Direction 1
+#define PIN_DRIVE_IN2         31   // Left Motor Direction 2
+#define PIN_DRIVE_IN3         32   // Right Motor Direction 1
+#define PIN_DRIVE_IN4         33   // Right Motor Direction 2
 #define PIN_DRIVE_ENA         6    // Left Motor Speed (PWM)
 #define PIN_DRIVE_ENB         7    // Right Motor Speed (PWM)
 
