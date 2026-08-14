@@ -142,6 +142,12 @@ void Telemetry::update(Drive &drive) {
     while (SERIAL_BT.available()) {
         char c = SERIAL_BT.read();
 
+#if DEBUG
+        Serial.print(F("[BT RECV]: '"));
+        Serial.print(c);
+        Serial.println(F("'"));
+#endif
+
         // Instant single-character parsing (F, B, L, R, S) without requiring newline
         if (c == 'F' || c == 'f' || c == 'B' || c == 'b' || 
             c == 'L' || c == 'l' || c == 'R' || c == 'r' || c == 'S' || c == 's') {
